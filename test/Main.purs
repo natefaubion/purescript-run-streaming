@@ -1,18 +1,18 @@
 module Test.Main where
 
-import Prelude hiding (map)
 import Control.Monad.Eff (Eff)
 import Data.Array as A
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
-import Run (Run, run)
+import Prelude hiding (map)
+import Run (Run, extract)
 import Run.Streaming.Prelude as S
-import Run.Streaming.Push as Push
 import Run.Streaming.Pull as Pull
+import Run.Streaming.Push as Push
 import Test.Assert (ASSERT, assert')
 
 toArray ∷ ∀ x. Run (S.Producer x ()) Unit → Array x
-toArray = run <<< S.fold A.snoc [] id
+toArray = extract <<< S.fold A.snoc [] id
 
 -- Push based take
 take' ∷ ∀ x r. Int → x → Run (S.Transformer x x r) Unit
@@ -143,7 +143,7 @@ main = do
         S.each []
           # S.null
     in
-      run test
+      extract test
 
   assert' "head"
     let
@@ -151,7 +151,7 @@ main = do
         S.succ 1
           # S.head
     in
-      run test == Just 1
+      extract test == Just 1
 
   assert' "last"
     let
@@ -160,7 +160,7 @@ main = do
           # S.feed (S.take 10)
           # S.last
     in
-      run test == Just 10
+      extract test == Just 10
 
   assert' "all/true"
     let
@@ -169,7 +169,7 @@ main = do
           # S.feed (S.take 10)
           # S.all (_ < 11)
     in
-      run test
+      extract test
 
   assert' "all/false"
     let
@@ -178,7 +178,7 @@ main = do
           # S.feed (S.take 10)
           # S.all (_ < 10)
     in
-      not run test
+      not extract test
 
   assert' "any/true"
     let
@@ -187,7 +187,7 @@ main = do
           # S.feed (S.take 10)
           # S.any (_ > 5)
     in
-      run test
+      extract test
 
   assert' "any/false"
     let
@@ -196,7 +196,7 @@ main = do
           # S.feed (S.take 10)
           # S.any (_ > 10)
     in
-      not run test
+      not extract test
 
   assert' "elem/true"
     let
@@ -205,7 +205,7 @@ main = do
           # S.feed (S.take 10)
           # S.elem 5
     in
-      run test
+      extract test
 
   assert' "elem/false"
     let
@@ -214,7 +214,7 @@ main = do
           # S.feed (S.take 10)
           # S.elem 11
     in
-      not run test
+      not extract test
 
   assert' "find"
     let
@@ -222,7 +222,7 @@ main = do
         S.succ 1
           # S.find (_ == 5)
     in
-      run test == Just 5
+      extract test == Just 5
 
   assert' "index"
     let
@@ -230,7 +230,7 @@ main = do
         S.succ 1
           # S.index 4
     in
-      run test == Just 5
+      extract test == Just 5
 
   assert' "findIndex"
     let
@@ -238,7 +238,7 @@ main = do
         S.succ 1
           # S.findIndex (_ == 5)
     in
-      run test == Just (Tuple 4 5)
+      extract test == Just (Tuple 4 5)
 
   assert' "length"
     let
@@ -247,7 +247,7 @@ main = do
           # S.feed (S.take 10)
           # S.length
     in
-      run test == 10
+      extract test == 10
 
   assert' "sum"
     let
@@ -256,7 +256,7 @@ main = do
           # S.feed (S.take 10)
           # S.sum
     in
-      run test == 55
+      extract test == 55
 
   assert' "product"
     let
@@ -265,7 +265,7 @@ main = do
           # S.feed (S.take 10)
           # S.product
     in
-      run test == 3628800
+      extract test == 3628800
 
   assert' "minimum"
     let
@@ -273,7 +273,7 @@ main = do
         S.each (10 A... 1)
           # S.minimum
     in
-      run test == Just 1
+      extract test == Just 1
 
   assert' "maximum"
     let
@@ -281,7 +281,7 @@ main = do
         S.each (1 A... 10)
           # S.maximum
     in
-      run test == Just 10
+      extract test == Just 10
 
   assert' "server/client"
     let
