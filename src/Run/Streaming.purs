@@ -30,7 +30,6 @@ module Run.Streaming
   ) where
 
 import Prelude
-import Data.Either (Either(..))
 import Data.Profunctor (class Profunctor, dimap)
 import Data.Symbol (class IsSymbol)
 import Run (Run, SProxy(..), FProxy)
@@ -119,15 +118,11 @@ runStep
   → Run r1 (Resume r1 a i o)
 runStep p = loop
   where
-  handle = Run.on p Left Right
-  loop r = case Run.peel r of
-    Left a → case handle a of
-      Left (Step o k) →
-        pure (Next o (k >>> loop))
-      Right a' →
-        Run.send a' >>= loop
-    Right a →
-      pure (Done a)
+  loop = Run.resume
+    (Run.on p
+      (\(Step o k) → pure (Next o (k >>> loop)))
+      (\a → Run.send a >>= loop))
+    (pure <<< Done)
 
 runYield ∷ ∀ r a i o. Run (Server i o r) a → Run r (Resume r a i o)
 runYield = runStep _yield
