@@ -1,5 +1,5 @@
 -- | This module defines primitives for bidirectional streams analagous to
--- | the Haskell `Pipes` library. Namely, streams may be either pull or pull
+-- | the Haskell `Pipes` library. Namely, streams may be either push or pull
 -- | and can propagate information both upstream and downstream.
 
 module Run.Streaming
