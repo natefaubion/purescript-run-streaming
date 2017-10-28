@@ -27,7 +27,7 @@
   "dependencies": {
     "purescript-prelude": "^3.0.0",
     "purescript-console": "^3.0.0",
-    "purescript-run": "^0.4.0"
+    "purescript-run": "^1.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0",

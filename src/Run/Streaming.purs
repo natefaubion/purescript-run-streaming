@@ -57,10 +57,10 @@ _await ∷ SProxy "await"
 _await = SProxy
 
 liftYield ∷ ∀ req res r. Step res req ~> Run (yield ∷ STEP res req | r)
-liftYield = Run.liftEffect _yield
+liftYield = Run.lift _yield
 
 liftAwait ∷ ∀ req res r. Step req res ~> Run (await ∷ STEP req res | r)
-liftAwait = Run.liftEffect _await
+liftAwait = Run.lift _await
 
 -- | Yields a response and waits for a request.
 respond ∷ ∀ req res r. res → Run (Server req res r) req
