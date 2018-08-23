@@ -14,7 +14,7 @@ module Run.Streaming.Pull
   , consume
   ) where
 
-import Prelude hiding (compose)
+import Prelude hiding (compose, identity)
 import Run (Run)
 import Run.Streaming as RS
 

@@ -10,7 +10,7 @@ module Run.Streaming.Push
   , produce
   ) where
 
-import Prelude hiding (compose)
+import Prelude hiding (compose, identity)
 import Run (Run)
 import Run.Streaming as RS
 
