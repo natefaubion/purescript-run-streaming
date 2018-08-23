@@ -30,8 +30,10 @@ module Run.Streaming
   ) where
 
 import Prelude
+
 import Data.Profunctor (class Profunctor, dimap)
 import Data.Symbol (class IsSymbol)
+import Prim.Row (class Cons)
 import Run (Run, SProxy(..), FProxy)
 import Run as Run
 
@@ -63,11 +65,11 @@ liftAwait = Run.lift _await
 
 -- | Yields a response and waits for a request.
 respond ∷ ∀ req res r. res → Run (Server req res r) req
-respond res = liftYield (Step res id)
+respond res = liftYield (Step res identity)
 
 -- | Issues a request and awaits a response.
 request ∷ ∀ req res r. req → Run (Client req res r) res
-request req = liftAwait (Step req id)
+request req = liftAwait (Step req identity)
 
 -- | Yields a value to be consumed downstream.
 yield ∷ ∀ o r. o → Run (Producer o r) Unit
@@ -111,7 +113,7 @@ instance profunctorResume ∷ Profunctor (Resume r a) where
 
 runStep
   ∷ ∀ sym i o r1 r2 a
-  . RowCons sym (FProxy (Step i o)) r1 r2
+  . Cons sym (FProxy (Step i o)) r1 r2
   ⇒ IsSymbol sym
   ⇒ SProxy sym
   → Run r2 a

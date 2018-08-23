@@ -205,11 +205,11 @@ any f = P.map not <<< null <<< Pull.feed (filter f)
 
 -- | Checks if all yielded values are true.
 and ∷ ∀ r. Run (Producer Boolean (Producer Boolean r)) Unit → Run r Boolean
-and = all id
+and = all identity
 
 -- | Checks if any yielded values are true.
 or ∷ ∀ r. Run (Producer Boolean (Producer Boolean r)) Unit → Run r Boolean
-or = any id
+or = any identity
 
 -- | Checks if a value occurs in the stream.
 elem ∷ ∀ r x. Eq x ⇒ x → Run (Producer x (Producer x r)) Unit → Run r Boolean
@@ -294,19 +294,19 @@ foldM' step init done ra = do
 
 -- | Returns the number of values yielded by a Producer.
 length ∷ ∀ r x. Run (Producer x r) Unit → Run r Int
-length = fold (const <<< add 1) 0 id
+length = fold (const <<< add 1) 0 identity
 
 -- | Returns the sum of values yielded by a Producer.
 sum ∷ ∀ r x. Semiring x ⇒ Run (Producer x r) Unit → Run r x
-sum = fold (+) zero id
+sum = fold (+) zero identity
 
 -- | Returns the product of values yielded by a Producer.
 product ∷ ∀ r x. Semiring x ⇒ Run (Producer x r) Unit → Run r x
-product = fold (*) one id
+product = fold (*) one identity
 
 -- | Returns the minimum value yielded by a Producer.
 minimum ∷ ∀ r x. Ord x ⇒ Run (Producer x r) Unit → Run r (Maybe x)
-minimum = fold go Nothing id
+minimum = fold go Nothing identity
   where
   go x y = Just case x of
     Nothing → y
@@ -314,7 +314,7 @@ minimum = fold go Nothing id
 
 -- | Returns the maximum value yielded by a Producer.
 maximum ∷ ∀ r x. Ord x ⇒ Run (Producer x r) Unit → Run r (Maybe x)
-maximum = fold go Nothing id
+maximum = fold go Nothing identity
   where
   go x y = Just case x of
     Nothing → y
