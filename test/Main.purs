@@ -1,24 +1,25 @@
 module Test.Main where
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
+import Prelude hiding (map)
+
 import Data.Array as A
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
-import Prelude hiding (map)
+import Effect (Effect)
+import Effect.Console (log)
 import Run (Run, extract)
 import Run.Streaming.Prelude as S
 import Run.Streaming.Pull as Pull
 import Run.Streaming.Push as Push
-import Test.Assert (ASSERT, assert')
+import Test.Assert (assert')
 
-assert ∷ ∀ eff. String → Boolean → Eff (assert ∷ ASSERT, console ∷ CONSOLE | eff) Unit
+assert ∷ String → Boolean → Effect Unit
 assert label ok
   | ok        = log ("[OK] " <> label)
   | otherwise = log ("[xx] " <> label) *> assert' label ok
  
 toArray ∷ ∀ x. Run (S.Producer x ()) Unit → Array x
-toArray = extract <<< S.fold A.snoc [] id
+toArray = extract <<< S.fold A.snoc [] identity
 
 -- Push based take
 take' ∷ ∀ x r. Int → x → Run (S.Transformer x x r) Unit
@@ -28,7 +29,7 @@ take' n x = S.yield x >>= S.request >>= take' (n - 1)
 data Req = A Int | B Int
 type Rep = String
 
-main ∷ Eff (assert ∷ ASSERT, console ∷ CONSOLE) Unit
+main ∷ Effect Unit
 main = do
   assert "pull/take"
     let

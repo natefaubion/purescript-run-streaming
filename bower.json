@@ -25,13 +25,13 @@
     "test"
   ],
   "dependencies": {
-    "purescript-prelude": "^3.0.0",
-    "purescript-console": "^3.0.0",
-    "purescript-run": "^1.0.0"
+    "purescript-prelude": "^4.1.0",
+    "purescript-run": "^2.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^3.0.0",
-    "purescript-assert": "^3.0.0",
-    "purescript-debug": "^3.0.0"
+    "purescript-psci-support": "^4.0.0",
+    "purescript-assert": "^4.0.0",
+    "purescript-console": "^4.1.0",
+    "purescript-debug": "^4.0.0"
   }
 }
