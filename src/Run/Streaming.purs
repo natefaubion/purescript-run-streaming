@@ -34,14 +34,15 @@ import Prelude
 import Data.Profunctor (class Profunctor, dimap)
 import Data.Symbol (class IsSymbol)
 import Prim.Row (class Cons)
-import Run (Run, SProxy(..), FProxy)
+import Run (Run)
 import Run as Run
+import Type.Prelude (Proxy(..))
 
 data Step i o a = Step o (i → a)
 
 derive instance functorStep ∷ Functor (Step i o)
 
-type STEP i o = FProxy (Step i o)
+type STEP i o = Step i o
 
 type YIELD a = STEP Unit a
 
@@ -51,11 +52,11 @@ type REQUEST req res = STEP res req
 
 type RESPOND req res = STEP req res
 
-_yield ∷ SProxy "yield"
-_yield = SProxy
+_yield ∷ Proxy "yield"
+_yield = Proxy
 
-_await ∷ SProxy "await"
-_await = SProxy
+_await ∷ Proxy "await"
+_await = Proxy
 
 liftYield ∷ ∀ req res r. Step res req ~> Run (yield ∷ STEP res req | r)
 liftYield = Run.lift _yield
@@ -113,9 +114,9 @@ instance profunctorResume ∷ Profunctor (Resume r a) where
 
 runStep
   ∷ ∀ sym i o r1 r2 a
-  . Cons sym (FProxy (Step i o)) r1 r2
+  . Cons sym (Step i o) r1 r2
   ⇒ IsSymbol sym
-  ⇒ SProxy sym
+  ⇒ Proxy sym
   → Run r2 a
   → Run r1 (Resume r1 a i o)
 runStep p = loop
